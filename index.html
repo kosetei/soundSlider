@@ -3,6 +3,28 @@
 <head>
   <title>Sound Slider</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    /* モバイルで長押しによるテキスト選択やコピー、タッチハイライトを無効化 */
+    html, body {
+      -webkit-user-select: none; /* Safari/Chrome */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* IE/Edge */
+      user-select: none; /* 標準 */
+      -webkit-touch-callout: none; /* iOS のコンテキストメニュー */
+      -webkit-tap-highlight-color: rgba(0,0,0,0); /* タップのハイライトを無効化 */
+      touch-action: manipulation; /* ブラウザの既定のジェスチャを抑制（必要に応じて調整） */
+    }
+
+    /* スライダー自体は確実に選択不可・長押し無効にする */
+    .no-select {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+  </style>
 </head>
 
 <body>
@@ -129,12 +151,16 @@
 
         soundSlider.addEventListener("touchstart", (e) => {
           const y = e.touches[0].pageY;
+          // 長押しによる選択やコンテキストメニューを抑制
+          e.preventDefault();
           this.playSin(this.baseFrequency + y);
           this.updateFrequencyDisplay(e.touches[0].pageX, e.touches[0].pageY, this.baseFrequency + y);
         });
 
         soundSlider.addEventListener("touchmove", (e) => {
           const y = e.touches[0].pageY;
+          // 長押しによる選択を防ぐ
+          e.preventDefault();
           if (this.snd) {
             this.snd.frequency.value = this.baseFrequency + y;
             this.updateFrequencyDisplay(e.touches[0].pageX, e.touches[0].pageY, this.baseFrequency + y);
@@ -147,6 +173,14 @@
         });
 
         document.body.append(soundSlider);
+
+  // スライダーを選択不可クラスにする
+  soundSlider.classList.add('no-select');
+
+  // グローバルにコンテキストメニューとテキスト選択の開始を抑制
+  // （必要な操作がある場合は限定的にする）
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
+  document.addEventListener('selectstart', (e) => e.preventDefault());
 
         // 最低周波数を調整するUIを画面右側に配置
         const controlContainer = document.createElement('div');
