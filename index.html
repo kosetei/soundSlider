@@ -148,6 +148,8 @@
         soundSlider.style.height = "100vh";
         soundSlider.style.marginLeft = "2em";
         soundSlider.style.background = "#333";
+        // スライダーを選択不可クラスにする
+        soundSlider.classList.add('no-select');
 
         soundSlider.addEventListener("touchstart", (e) => {
           const y = e.touches[0].pageY;
@@ -173,14 +175,6 @@
         });
 
         document.body.append(soundSlider);
-
-  // スライダーを選択不可クラスにする
-  soundSlider.classList.add('no-select');
-
-  // グローバルにコンテキストメニューとテキスト選択の開始を抑制
-  // （必要な操作がある場合は限定的にする）
-  document.addEventListener('contextmenu', (e) => e.preventDefault());
-  document.addEventListener('selectstart', (e) => e.preventDefault());
 
         // 最低周波数を調整するUIを画面右側に配置
         const controlContainer = document.createElement('div');
@@ -320,6 +314,13 @@
     }
     adjustFontSize();
     window.addEventListener("orientationchange", () => { setTimeout(adjustFontSize, 100) });
+
+    // グローバルにコンテキストメニューとテキスト選択の開始を抑制（初期化時に一度だけ追加）
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
+    // グローバルにコンテキストメニューとテキスト選択の開始を抑制
+    // （必要な操作がある場合は限定的にする）
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
+    document.addEventListener('selectstart', (e) => e.preventDefault());
 
     // インスタンスを作成して実行
     const soundController = new SoundController();
